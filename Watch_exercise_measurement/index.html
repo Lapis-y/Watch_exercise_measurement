@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>运动量计量</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        #input-form {
+            margin: 20px auto;
+            max-width: 400px;
+        }
+        #result1, #result2, #result3, #result4 {
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        label {
+            display: inline-block;
+            width: 50%;
+            text-align: right;
+            margin-bottom: 10px;
+        }
+        input {
+            width: 50%;
+            margin-bottom: 10px;
+            padding: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>运动量计量</h1>
+    <form id="input-form">
+        <label for="feature1">特征 1 (久坐分钟数)：</label>
+        <input type="number" id="feature1" step="0.01" required><br>
+        <label for="feature2">特征 2 (总步数)：</label>
+        <input type="number" id="feature2" step="0.01" required><br>
+        <label for="feature3">特征 3 (总睡眠分钟数)：</label>
+        <input type="number" id="feature3" step="0.01" required><br>
+        <label for="feature4">特征 4 (总上床时间)：</label>
+        <input type="number" id="feature4" step="0.01" required><br>
+        <button type="button" onclick="predict()">预测</button>
+    </form>
+    <div id="result1"></div>
+    <div id="result2"></div>
+    <div id="result3"></div>
+    <div id="result4"></div>
+
+    <script>
+        async function predict() {
+            const features = [
+                parseFloat(document.getElementById('feature1').value),
+                parseFloat(document.getElementById('feature2').value),
+                parseFloat(document.getElementById('feature3').value),
+                parseFloat(document.getElementById('feature4').value)
+            ];
+
+            // 使用模型1进行预测
+            const response1 = await fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ features })
+            });
+            const data1 = await response1.json();
+            document.getElementById('result1').textContent = `模型1线性回归 预测结果：${data1.prediction}`;
+
+            // 使用模型2进行预测
+            const response2 = await fetch('/predict2', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ features })
+            });
+            const data2 = await response2.json();
+            document.getElementById('result2').textContent = `模型2深层网络 预测结果：${data2.prediction}`;
+
+            // 使用模型3进行预测
+            const response3 = await fetch('/predict3', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ features })
+            });
+            const data3 = await response3.json();
+            document.getElementById('result3').textContent = `模型3残差网络 预测结果：${data3.prediction}`;
+
+            // 使用模型4进行预测
+            const response4 = await fetch('/predict4', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ features })
+            });
+            const data4 = await response4.json();
+            document.getElementById('result4').textContent = `模型4残差、批量归一、dropout 预测结果：${data4.prediction}`;
+        }
+    </script>
+</body>
+</html>
